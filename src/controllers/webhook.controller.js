@@ -4,22 +4,28 @@ const logger = require('../utils/logger');
 async function handlePlayWebhook(req, res) {
   try {
     const message = req.body.message;
-    console.log("Decoded Latest Data:", JSON.stringify(message, null, 2));
+    console.log("Request Body:", JSON.stringify(message, null, 2));
+
     const decoded = JSON.parse(
       Buffer.from(message.data, 'base64').toString()
     );
+    console.log("Decoded Request Body:", JSON.stringify(decoded, null, 2));
 
     const notification = decoded.subscriptionNotification;
+    console.log("Notification:", JSON.stringify(notification, null, 2));
 
     const purchaseToken = notification.purchaseToken;
+    console.log("Purchase Token:", JSON.stringify(purchaseToken, null, 2));
+
     const subscriptionId = notification.subscriptionId;
+    console.log("SubscriptionId:", JSON.stringify(subscriptionId, null, 2));
 
     const latestData = await playService.verifySubscription(
       purchaseToken,
       subscriptionId
     );
-
-    console.log("Decoded Latest Data:", JSON.stringify(latestData, null, 2));
+    console.log("Latest Data:", JSON.stringify(latestData, null, 2));
+    
     logger.info('Decoded Latest Data', JSON.stringify(latestData, null, 2));
     // TODO: Update DB with latestData
 
