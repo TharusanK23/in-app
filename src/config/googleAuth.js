@@ -2,7 +2,7 @@ const { google } = require('googleapis');
 const env = require('./env');
 
 const auth = new google.auth.GoogleAuth({
-  keyFile: env.google.serviceAccountPath,
+  credentials: env.google.serviceAccount, // use decoded Base64 JSON
   scopes: ['https://www.googleapis.com/auth/androidpublisher'],
 });
 
@@ -12,3 +12,5 @@ const androidpublisher = google.androidpublisher({
 });
 
 module.exports = androidpublisher;
+
+
