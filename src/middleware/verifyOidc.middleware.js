@@ -5,7 +5,7 @@ const client = new OAuth2Client();
 
 async function verifyOidc(req, res, next) {
   const authHeader = req.headers.authorization;
-
+  console.log("Decoded Latest Data:", JSON.stringify(authHeader, null, 2));
   if (!authHeader) {
     return res.status(401).send('Missing Authorization');
   }

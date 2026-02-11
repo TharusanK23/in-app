@@ -4,7 +4,7 @@ const logger = require('../utils/logger');
 async function handlePlayWebhook(req, res) {
   try {
     const message = req.body.message;
-
+    console.log("Decoded Latest Data:", JSON.stringify(message, null, 2));
     const decoded = JSON.parse(
       Buffer.from(message.data, 'base64').toString()
     );
