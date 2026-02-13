@@ -14,19 +14,24 @@ async function handlePlayWebhook(req, res) {
     const notification = decoded.subscriptionNotification;
     console.log("Notification:", JSON.stringify(notification, null, 2));
 
-    const purchaseToken = notification.purchaseToken;
-    console.log("Purchase Token:", JSON.stringify(purchaseToken, null, 2));
+    if(notification) {
+      const purchaseToken = notification.purchaseToken;
+      console.log("Purchase Token:", JSON.stringify(purchaseToken, null, 2));
 
-    const subscriptionId = notification.subscriptionId;
-    console.log("SubscriptionId:", JSON.stringify(subscriptionId, null, 2));
+      const subscriptionId = notification.subscriptionId;
+      console.log("SubscriptionId:", JSON.stringify(subscriptionId, null, 2));
 
-    const latestData = await playService.verifySubscription(
-      purchaseToken,
-      subscriptionId
-    );
-    console.log("Latest Data:", JSON.stringify(latestData, null, 2));
+      const latestData = await playService.verifySubscription(
+        purchaseToken,
+        subscriptionId
+      );
+      console.log("Latest Data:", JSON.stringify(latestData, null, 2));
+      
+      logger.info('Decoded Latest Data', JSON.stringify(latestData, null, 2));
+    } else {
+      console.log("No any Datas");
+    }
     
-    logger.info('Decoded Latest Data', JSON.stringify(latestData, null, 2));
     // TODO: Update DB with latestData
 
     res.status(200).send();
