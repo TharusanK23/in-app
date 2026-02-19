@@ -1,5 +1,6 @@
 const playService = require('../services/play.service');
 const logger = require('../utils/logger');
+const jwt = require('jsonwebtoken');
 
 async function handlePlayWebhook(req, res) {
   try {
@@ -41,6 +42,23 @@ async function handlePlayWebhook(req, res) {
   }
 }
 
+async function handleAppleWebhook(req, res) {
+  try {
+    const { signedPayload } = req.body;
+    console.log("Signed Payload:", JSON.stringify(signedPayload, null, 2));
+
+    const decoded = jwt.decode(signedPayload, { complete: true });
+    console.log("Decoded:", JSON.stringify(decoded, null, 2));
+
+    console.log("Decoded Payload:", JSON.stringify(decoded, null, 2));
+
+    res.status(200).send();
+  } catch (error) {
+    res.status(400).send();
+  }
+}
+
 module.exports = {
   handlePlayWebhook,
+  handleAppleWebhook
 };

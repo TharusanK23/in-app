@@ -1,7 +1,8 @@
 const playService = require('../services/play.service');
+const appleService = require('../services/apple.service');
 const subscriptionService = require('../services/subscription.service');
 
-async function verifySubscription(req, res) {
+async function verifyPlaySubscription(req, res) {
   const { purchaseToken, productId } = req.body;
 
   try {
@@ -28,6 +29,23 @@ async function verifySubscription(req, res) {
   }
 }
 
+async function verifyAppleSubscription(req, res) {
+  const { originalTransactionId } = req.body;
+
+  try {
+    const data = await appleService.getSubscriptionStatus(originalTransactionId);
+
+    res.json({
+      success: true,
+      data,
+    });
+  } catch (error) {
+    logger.error(error.message);
+    res.status(400).json({ error: error.message });
+  }
+}
+
 module.exports = {
-  verifySubscription,
+  verifyPlaySubscription,
+  verifyAppleSubscription
 };
