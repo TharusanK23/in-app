@@ -4,8 +4,9 @@ const jwt = require('jsonwebtoken');
 
 async function handlePlayWebhook(req, res) {
   try {
+    console.log("Request Body:", JSON.stringify(req.body, null, 2));
     const message = req.body.message;
-    console.log("Request Body:", JSON.stringify(message, null, 2));
+    console.log("Request Body Message:", JSON.stringify(message, null, 2));
 
     const decoded = JSON.parse(
       Buffer.from(message.data, 'base64').toString()
