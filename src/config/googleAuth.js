@@ -11,6 +11,6 @@ const androidpublisher = google.androidpublisher({
   auth,
 });
 
-module.exports = androidpublisher;
+module.exports = {auth, androidpublisher};
 
 
