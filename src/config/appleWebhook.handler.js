@@ -13,9 +13,11 @@ async function handleNotification(payload) {
   // Decode inner JWTs
   const transaction =
     jwt.decode(data.signedTransactionInfo);
+  console.log("Transaction:", transaction);
 
   const renewal =
     jwt.decode(data.signedRenewalInfo);
+  console.log("Renewal:", renewal);
 
   const originalTransactionId =
     transaction.originalTransactionId;

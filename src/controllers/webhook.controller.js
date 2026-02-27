@@ -77,7 +77,7 @@ ${cert}
       "Verified Payload:",
       verifiedPayload
     );
-
+    
     // Handle notification
     await handleNotification(verifiedPayload);
 
