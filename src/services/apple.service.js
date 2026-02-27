@@ -1,6 +1,21 @@
 const axios = require('axios');
 const { generateAppleJWT } = require('../config/appleAuth');
 
+let cachedKeys = null;
+
+async function getApplePublicKeys() {
+
+  if (cachedKeys) return cachedKeys;
+
+  const response = await axios.get(
+    'https://api.storekit.itunes.apple.com/inApps/v1/notifications/publicKeys'
+  );
+
+  cachedKeys = response.data.keys;
+
+  return cachedKeys;
+}
+
 async function getSubscriptionStatus(originalTransactionId) {
   const token = generateAppleJWT();
 
@@ -18,4 +33,5 @@ async function getSubscriptionStatus(originalTransactionId) {
 
 module.exports = {
   getSubscriptionStatus,
+  getApplePublicKeys
 };

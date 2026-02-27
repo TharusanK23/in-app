@@ -1,6 +1,8 @@
 const playService = require('../services/play.service');
 const logger = require('../utils/logger');
 const jwt = require('jsonwebtoken');
+const { getApplePublicKeys } = require('../services/apple.service');
+const handleNotification = require('../config/appleWebhook.handler');
 
 async function handlePlayWebhook(req, res) {
   try {
@@ -45,16 +47,44 @@ async function handlePlayWebhook(req, res) {
 
 async function handleAppleWebhook(req, res) {
   try {
+
     const { signedPayload } = req.body;
-    console.log("Signed Payload:", JSON.stringify(signedPayload, null, 2));
 
-    const decoded = jwt.decode(signedPayload, { complete: true });
-    console.log("Decoded:", JSON.stringify(decoded, null, 2));
+    if (!signedPayload)
+      return res.status(400).send('Missing payload');
 
-    console.log("Decoded Payload:", JSON.stringify(decoded, null, 2));
+    // Decode header
+    const decodedHeader =
+      jwt.decode(signedPayload, { complete: true });
+
+    const kid = decodedHeader.header.kid;
+
+    const keys = await getApplePublicKeys();
+
+    const appleKey =
+      keys.find(k => k.kid === kid);
+
+    if (!appleKey)
+      throw new Error('Apple key not found');
+
+    const publicKey =
+    `-----BEGIN PUBLIC KEY-----
+    ${appleKey.x5c[0]}
+    -----END PUBLIC KEY-----`;
+
+    // ✅ VERIFY APPLE SIGNATURE
+    const verifiedPayload =
+      jwt.verify(signedPayload, publicKey, {
+        algorithms: ['ES256'],
+      });
+
+    // Handle notification
+    await handleNotification(verifiedPayload);
 
     res.status(200).send();
-  } catch (error) {
+
+  } catch (err) {
+    console.error(err);
     res.status(400).send();
   }
 }
